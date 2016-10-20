@@ -1,0 +1,362 @@
+1- open this 
+https://github.com/sibabrat/socialite-laravel-signup-signin
+2 - instal this upadte in cmd promt 
+composer require laravel/socialite
+
+3-php artisan make:auth
+
+4- add this to config.php
+
+ Laravel\Socialite\SocialiteServiceProvider::class, ( line n0 150)
+
+5 - add this  	to config.php
+'Socialite' => Laravel\Socialite\Facades\Socialite::class, (line no 205)
+
+6- in serveice.php inside config  add this and after creating fb id put the credentials 
+
+'github' => [
+    'client_id' => 'your-github-app-id',
+    'client_secret' => 'your-github-app-secret',
+    'redirect' => 'http://your-callback-url',
+],
+
+
+
+7 - creat a controller 
+
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\Request;
+use App\Facebook;
+use App\Socialiteuser;
+use Illuminate\Support\Facades\Auth;
+use App\Twitter;
+use Socialite;
+use DB;
+use Illuminate\Support\Facades\Hash;
+
+
+use Symfony\Component\Routing\RequestContextAwareInterface;
+
+class SocialiteController extends Controller
+{
+
+
+    //google authentication
+    public function redirectToProviderGoogle(Request $request)
+    {
+        $temp = $request->get('number');
+        $sessionName='login';
+        $sessionName = $temp;
+        session(['key'=>$sessionName]);
+        $tempvalue = (session('key'));
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleProviderCallbackGoogle()
+    {
+        if (session('key'))
+        {
+            $user = Socialite::driver('google')->user();
+            $authUser = $this->findOrCreateUserGoogle($user);
+            Auth::login($authUser, true);
+            $users=DB::table('socialiteusers')->get();
+            return view('/home', compact('users'));
+        }
+        else
+        {
+            $user = Socialite::driver('google')->user();
+            $authUser = $this->findOrCreateUserGoogle($user);
+            echo "You have succesfully signed up with google";
+        }
+    }
+
+    public function findOrCreateUserGoogle($googleUser)
+    {
+        $authUser = Socialiteuser::where('socialite_id', $googleUser->id)->first();
+        if ($authUser) {
+            return $authUser;
+        }
+        {
+            $userData = new Socialiteuser();
+            $userData['socialite_id']  = $googleUser->id;
+            $userData['name']  = $googleUser->name;
+            $userData['email']  = $googleUser->email;
+            $userData['avatar']  = $googleUser->avatar;
+            $userData['status']  = 1 ;
+            $userData['password']  = Hash::make(rand(100000, 999999));
+            $userData->save();
+        }
+    }
+
+
+
+    // for facebook
+    public function redirectToProviderFacebook(Request $request)
+    {
+
+        $temp = $request->get('number');
+        $sessionName='login';
+        $sessionName = $temp;
+        session(['key'=>$sessionName]);
+        $tempvalue = (session('key'));
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function handleProviderCallbackFacebook()
+    {
+        if(session('key'))
+        {
+            $user = Socialite::driver('facebook')->user();
+            $authUser = $this->findOrCreateUserFacebook($user);
+            Auth::login($authUser, true);
+            $users=DB::table('socialiteusers')->get();
+            return view('/home', compact('users'));
+        }
+        else
+        {
+            $user = Socialite::driver('facebook')->user();
+            $authUser = $this->findOrCreateUserFacebook($user);
+            echo "you have succesfully signed up using facebook";
+        }
+    }
+
+
+    public function findOrCreateUserFacebook($facebookUser){
+
+        $authUser = Socialiteuser::where('socialite_id', $facebookUser->id)->first();
+        if ($authUser) {
+            return $authUser;
+        }
+        {
+            $userData = new Socialiteuser();
+            $userData['socialite_id'] = $facebookUser['id'];
+            $userData['name'] = $facebookUser['name'];
+            $userData['email'] = $facebookUser['email'];
+            $userData['avatar'] = $facebookUser->avatar_original;
+            $userData['status'] = 2;
+            $userData['password'] = Hash::make(rand(100000, 999999));
+            $userData->save();
+        }
+    }
+
+
+
+
+//for twitter
+    public function redirectToProvider(Request $request)
+    {
+        $temp = $request->get('number');
+        $sessionName='login';
+        $sessionName = $temp;
+        session(['key'=>$sessionName]);
+        $tempvalue = (session('key'));
+        return Socialite::driver('twitter')->redirect();
+    }
+
+    public function handleProviderCallback()
+    {
+        if(session('key'))
+        {
+            $user = Socialite::driver('twitter')->user();
+            $authUser = $this->findOrCreateUser($user);
+            Auth::login($authUser, true);
+            $users=DB::table('socialiteusers')->get();
+            return view('/home', compact('users'));
+        }
+        else
+        {
+            $user = Socialite::driver('twitter')->user();
+            $authUser = $this->findOrCreateUser($user);
+            echo "you  have signed  up with twitter ";
+        }
+    }
+    private function findOrCreateUser($twitterUser)
+    {
+        $authUser = Socialiteuser::where('socialite_id', $twitterUser->id)->first();
+        if ($authUser) {
+            return $authUser;
+        }
+        {
+            $userData = new Socialiteuser();
+            $userData['socialite_id'] = $twitterUser->id;
+            $userData['name'] = $twitterUser->name;
+            $userData['user_name'] = $twitterUser->nickname;
+            $userData['avatar'] = $twitterUser->avatar_original;
+            $userData['status'] = 3;
+            $userData['password'] = Hash::make(rand(100000, 999999));
+            $userData->save();
+        }
+
+    }
+
+
+
+
+    //linkedin authentication
+      public function redirectToProviderLinkedin(Request $request)
+      {
+          $temp = $request->get('number');
+          $sessionName='login';
+          $sessionName = $temp;
+          session(['key'=>$sessionName]);
+          $tempvalue = (session('key'));
+          return Socialite::driver('linkedin')->redirect();
+      }
+      public function handleProviderCallbackLinkedin()
+      {
+          if(session('key'))
+          {
+              $user = Socialite::driver('linkedin')->user();
+              $authUser = $this->findOrCreateUserLinkedin($user);
+              Auth::login($authUser, true);
+              $users=DB::table('socialiteusers')->get();
+              return view('/home', compact('users'));
+          }
+          else
+          {
+              $user = Socialite::driver('linkedin')->user();
+              $authUser = $this->findOrCreateUserLinkedin($user);
+              echo "you have succesfully signed up using linked in ";
+          }
+      }
+      public  function findOrCreateUserLinkedin($linkedinUser)
+      {
+          $authUser = Socialiteuser::where('socialite_id', $linkedinUser->id)->first();
+          if ($authUser) {
+              return $authUser;
+          }
+          {
+              $userData = new Socialiteuser();
+              $userData['socialite_id'] = $linkedinUser['id'];
+              $userData['name'] = $linkedinUser->name;
+              $userData['email'] = $linkedinUser->email;
+              $userData['avatar'] = $linkedinUser->avatar_original;
+              $userData['status'] = 4;
+              $userData['password'] = Hash::make(rand(100000, 999999));
+              $userData->save();
+          }
+      }
+
+
+    //github authentication
+    public function redirectToProviderGithub(Request $request)
+    {
+        $temp = $request->get('number');
+        $sessionName='login';
+        $sessionName = $temp;
+        session(['key'=>$sessionName]);
+        $tempvalue = (session('key'));
+        return Socialite::driver('github')->redirect();
+    }
+    public  function handleProviderCallbackGithub()
+    {
+        if(session('key'))
+        {
+            $user = Socialite::driver('github')->user();
+            $authUser = $this->findOrCreateUserGithub($user);
+            Auth::login($authUser, true);
+            $users=DB::table('socialiteusers')->get();
+            return view('/home', compact('users'));
+        }
+        else{
+            $user = Socialite::driver('github')->user();
+            $authUser = $this->findOrCreateUserGithub($user);
+            echo "you have sucessfully signed up using github";
+        }
+    }
+    public function findOrCreateUserGithub($githubUser)
+    {
+        $authUser = Socialiteuser::where('socialite_id', $githubUser->id)->first();
+        if ($authUser) {
+            return $authUser;
+        }
+        {
+            $userData = new Socialiteuser();
+            $userData['socialite_id'] = $githubUser->id;
+            $userData['name'] = $githubUser->name;
+            $userData['user_name'] = $githubUser->nickname;
+            $userData['email'] = $githubUser->email;
+            $userData['avatar'] = $githubUser->avatar;
+            $userData['status'] = 5;
+            $userData['password'] = Hash::make(rand(100000, 999999));
+            $userData->save();
+        }
+    }
+
+
+}
+
+
+- creat a model - 
+
+<?php
+
+namespace App;
+
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+
+class Socialiteuser extends Model implements Authenticatable
+{
+    use \Illuminate\Auth\Authenticatable;
+    protected $table = 'socialiteusers';
+    protected $fillable = [
+        'socialite_id',
+        'user_name',
+        'avtar',
+        'email',
+        'status',
+
+    ];
+}
+
+
+8 - routes 
+
+
+<?php
+Route::get('/', function () {
+    return view('welcome');
+});
+
+
+
+Route::auth();
+Route::get('auth/google/signin', 'SocialiteController@redirectToProviderGoogle')->name('googleSignin');
+Route::get('auth/facebook/signin', 'SocialiteController@redirectToProviderFacebook')->name('facebookSignin');
+Route::get('auth/twitter/signin', 'SocialiteController@redirectToProvider')->name('twitterSignin');
+Route::get('auth/linkedin/signin', 'SocialiteController@redirectToProviderLinkedin')->name('linkedinSignin');
+Route::get('auth/github/signin', 'SocialiteController@redirectToProviderGithub')->name('githubSignin');
+
+
+
+
+Route::get('auth/google', 'SocialiteController@redirectToProviderGoogle')->name('googleSignup');
+Route::get('auth/google/callback', 'SocialiteController@handleProviderCallbackGoogle');
+
+Route::get('auth/facebook', 'SocialiteController@redirectToProviderFacebook')->name('facebookSignup');
+Route::get('auth/facebook/callback', 'SocialiteController@handleProviderCallbackFacebook');
+
+Route::get('auth/twitter', 'SocialiteController@redirectToProvider')->name('twitterSignup');
+Route::get('auth/twitter/callback', 'SocialiteController@handleProviderCallback');
+
+Route::get('auth/linkedin', 'SocialiteController@redirectToProviderLinkedin')->name('linkedinSignup');
+Route::get('auth/linkedin/callback', 'SocialiteController@handleProviderCallbackLinkedin');
+
+Route::get('auth/github', 'SocialiteController@redirectToProviderGithub')->name('githubSignup');
+Route::get('auth/github/callback', 'SocialiteController@handleProviderCallbackGithub');
+
+
+
+
+9-add the file cacert.pem inside xamp/php 
+
+10 - edit the 
+
+curl.cainfo = "D:\xampp\php\cacert.pem"  (copy entire line from curl to .pem''
+
+inside  php.ini .
