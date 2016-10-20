@@ -39,33 +39,33 @@ return [
     'facebook' => [
         'client_id' => '*******',
         'client_secret' => '************',
-        'redirect' => 'http://www.localhostdemo.com/auth/facebook/callback',
+        'redirect' => 'http://www.localhost.com/auth/facebook/callback',
     ],
 
 
     'google' => [
         'client_id' => '*******',
         'client_secret' => '*******',
-        'redirect' => 'http://www.localhostdemo.com/auth/google/callback',
+        'redirect' => 'http://www.localhost.com/auth/google/callback',
     ],
 
     'twitter' => [
         'client_id' => '*******',
         'client_secret' => '*******',
-        'redirect' => 'http://www.localhostdemo.com/auth/twitter/callback',
+        'redirect' => 'http://www.localhost.com/auth/twitter/callback',
     ],
 
 
     'linkedin' => [
         'client_id' => '*******',
         'client_secret' => '*******',
-        'redirect' => 'http://www.localhostdemo.com/auth/linkedin/callback',
+        'redirect' => 'http://www.localhost.com/auth/linkedin/callback',
     ],
 
     'github' => [
         'client_id' => '*******',
         'client_secret' => '*******',
-        'redirect' => 'http://www.localhostdemo.com/auth/github/callback',
+        'redirect' => 'http://www.localhost.com/auth/github/callback',
     ],
 
 ];
