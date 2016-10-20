@@ -360,3 +360,12 @@ Route::get('auth/github/callback', 'SocialiteController@handleProviderCallbackGi
 curl.cainfo = "D:\xampp\php\cacert.pem"  (copy entire line from curl to .pem''
 
 inside  php.ini .
+
+
+*** make your apps from the link 
+
+https://apps.twitter.com/                                -twitter 
+https://www.linkedin.com/secure/developer                -linkedin
+https://github.com/settings/applications/new             -github
+https://console.developers.google.com/apis/dashboard     -google
+https://developers.facebook.com/                         -facebook
