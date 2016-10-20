@@ -1,0 +1,66 @@
+.new-post{
+    padding:8px 0;
+    border-bottom: 1px solid #ccc;
+}
+.new-post header,
+.post header{
+    margin-bottom: 20px;
+}
+.posts .post{
+    padding-left: 10px;
+    border-left: 6px solid #a21b24;
+    margin-bottom: 30px;
+}
+.posts .post .info {
+    color: #aaa;
+    font-style: italic;
+}
+
+
+.error,
+.success{
+    text-align: center;
+}
+
+.error{
+    border: 1px solid red;
+    background-color: #f9b5af;
+    color: red;
+}
+.success{
+    border: 1px solid green;
+    background-color: #d1f9da;
+    color: red;
+}
+.error ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+.content {
+    text-align: center;
+
+    padding-left: 30px;
+    padding-bottom: 0px;
+    padding-right: 100px;
+    display: inline-block;
+    color: #322236;
+}
+.shit {
+    text-align: center;
+    padding-left: 90px;
+    padding-top: 220px;
+    padding-bottom: 30px;
+    vertical-align: middle;
+}
+
+
+.title {
+    font-size: 30px;
+    color: #2e6da4;
+}
+
+
